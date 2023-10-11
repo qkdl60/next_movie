@@ -1,0 +1,5 @@
+{
+  "watch": ["src", "next.config.js"],
+  "ext": "js,jsx,ts,tsx",
+  "exec": "npm run dev"
+}
