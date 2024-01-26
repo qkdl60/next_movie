@@ -6,10 +6,10 @@ const MoviePage = async ({params}: {params: Params}) => {
   const movieDetail = (await res.json()) as ResponseValue;
   return (
     <div>
-      <Image fill src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />
+      <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />
       <div className="flex flex-wrap gap-4">
-        {detail.map((item) => (
-          <div key={movieDetail.imdbID}>
+        {detail.map((item, index) => (
+          <div key={index}>
             <h3 className="font-bold ">{item}</h3>
             <h4>{movieDetail[item] ?? "null"}</h4>
           </div>

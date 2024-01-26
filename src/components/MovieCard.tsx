@@ -11,7 +11,7 @@ interface Search {
 const MovieCard = ({Title, Year, Poster, id, ...props}: Search) => {
   return (
     <Link href={`/movie/${id}`} className="flex-column justify-center hover:scale-110 transition duration-150 w-[200px]">
-      <Image src={Poster} alt={Title} width={200} height={200} />
+      <Image src={Poster} alt={Title} width={300} height={20} priority style={{objectFit: "contain"}} />
       <h2 className="truncate">{Title}</h2>
       <h3>{Year}</h3>
     </Link>
