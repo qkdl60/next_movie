@@ -1,29 +1,20 @@
-"use client";
 import Image from "next/image";
-import {useEffect, useState} from "react";
 const detail = ["Title", "Year", "Director", "Writer", "Actors", "Plot"] as const;
-const MoviePage = ({params}: {params: Params}) => {
+const MoviePage = async ({params}: {params: Params}) => {
   const id = params.id;
-
-  const [movieDetail, setMovieDetail] = useState<ResponseValue | null>(null);
-  useEffect(() => {
-    fetch(`https://omdbapi.com?apikey=7035c60c&i=${id}`)
-      .then((res) => res.json())
-      .then((movie) => setMovieDetail(movie));
-  });
+  const res = await fetch(`https://omdbapi.com?apikey=7035c60c&i=${id}`);
+  const movieDetail = (await res.json()) as ResponseValue;
   return (
     <div>
-      {movieDetail && <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />}
-      {movieDetail && (
-        <div className="flex flex-wrap gap-4">
-          {detail.map((item, index) => (
-            <div key={index}>
-              <h3 className="font-bold ">{item}</h3>
-              <h4>{movieDetail[item] ?? "null"}</h4>
-            </div>
-          ))}
-        </div>
-      )}
+      <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />
+      <div className="flex flex-wrap gap-4">
+        {detail.map((item, index) => (
+          <div key={index}>
+            <h3 className="font-bold ">{item}</h3>
+            <h4>{movieDetail[item] ?? "null"}</h4>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

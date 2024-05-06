@@ -10,7 +10,6 @@ const SearchPage = async ({params, searchParams}: {params: {slug: string}; searc
       if (result && result.Response === "True") return result;
       return {Search: []};
     });
-  console.log(result);
   return (
     <div>
       {result.Search.map((movie) => (

@@ -1,11 +1,8 @@
 "use client";
-
-import {ChangeEvent, FormEvent, FormEventHandler, useState} from "react";
-import {useSearchContext} from "@/context/SearchProvider";
+import {ChangeEvent, FormEvent, useState} from "react";
 import {useRouter} from "next/navigation";
 const SearchHeader = () => {
   const [Input, setInput] = useState<string>("");
-
   const router = useRouter();
   const searchInput = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
