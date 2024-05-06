@@ -1,29 +1,24 @@
-"use client";
 import Image from "next/image";
-import {useEffect, useState} from "react";
+import {cookies} from "next/headers";
+import {getCookie} from "cookies-next";
 const detail = ["Title", "Year", "Director", "Writer", "Actors", "Plot"] as const;
-const MoviePage = ({params}: {params: Params}) => {
-  const {id} = params;
-
-  const [movieDetail, setMovieDetail] = useState<ResponseValue | null>(null);
-  useEffect(() => {
-    fetch(`https://omdbapi.com?apikey=7035c60c&i=${id}`)
-      .then((res) => res.json())
-      .then((movie) => setMovieDetail(movie));
-  }, [id]);
+const MoviePage = async ({params}: {params: Params}) => {
+  const id = params.id;
+  const apiKey = cookies().get("apiKey")?.value;
+  console.log(getCookie("searchValue"));
+  const res = await fetch(`https://omdbapi.com?apikey=${apiKey}&i=${id}`);
+  const movieDetail = (await res.json()) as ResponseValue;
   return (
     <div>
-      {movieDetail && <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />}
-      {movieDetail && (
-        <div className="flex flex-wrap gap-4">
-          {detail.map((item, index) => (
-            <div key={index}>
-              <h3 className="font-bold ">{item}</h3>
-              <h4>{movieDetail[item] ?? "null"}</h4>
-            </div>
-          ))}
-        </div>
-      )}
+      <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />
+      <div className="flex flex-wrap gap-4">
+        {detail.map((item, index) => (
+          <div key={index}>
+            <h3 className="font-bold ">{item}</h3>
+            <h4>{movieDetail[item] ?? "null"}</h4>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

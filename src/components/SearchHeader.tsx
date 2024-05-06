@@ -1,12 +1,14 @@
 "use client";
 import {ChangeEvent, FormEvent, useState} from "react";
 import {useRouter} from "next/navigation";
+import {setCookie} from "cookies-next";
 const SearchHeader = () => {
   const [Input, setInput] = useState<string>("");
   const router = useRouter();
   const searchInput = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (event.target) {
+      setCookie("searchValue", Input);
       router.push(`/search?value=${Input}`);
     }
     setInput("");
