@@ -1,3 +1,4 @@
+import Provider from "@/provider/Provider";
 import "./globals.css";
 import type {Metadata} from "next";
 import {Inter} from "next/font/google";
@@ -12,19 +13,23 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="ko">
-      <body className={`${inter.className} mx-auto max-w-xl`}>
-        <nav>
-          <ul className="flex gap-4">
-            <li>
-              <Link href={"/"}>Home</Link>
-            </li>
-            <li>
-              <Link href={"/search"}>SearchPage</Link>
-            </li>
-          </ul>
-        </nav>
-        <div style={{border: "2px solid blue", padding: "0", height: "calc(100vh - 24px )", position: "relative", overflow: "auto"}}>{children}</div>
-      </body>
+      <Provider>
+        <body className={`${inter.className} mx-auto max-w-xl`}>
+          <nav>
+            <ul className="flex gap-4">
+              <li>
+                <Link href={"/"}>Home</Link>
+              </li>
+              <li>
+                <Link href={"/search"}>SearchPage</Link>
+              </li>
+            </ul>
+          </nav>
+          <div style={{border: "2px solid blue", padding: "0", height: "calc(100vh - 24px )", position: "relative", overflow: "auto"}}>
+            {children}
+          </div>
+        </body>
+      </Provider>
     </html>
   );
 }
