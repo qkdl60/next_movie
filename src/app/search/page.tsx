@@ -1,36 +1,39 @@
-"use client";
-import {useSearchContext} from "@/context/SearchProvider";
-import {useEffect, useState} from "react";
-
-import {Movie} from "../page";
-import Link from "next/link";
 import MovieCard from "@/components/MovieCard";
 
-const SearchPage = () => {
-  const {state, setState} = useSearchContext();
-  const [movieList, setMovieList] = useState<Movie[]>([]);
-  useEffect(() => {
-    (async () => {
-      //react query 변경
-      const res = await fetch(`https://omdbapi.com?apikey=7035c60c&s=${state}`);
-      const searchResult = await res.json();
-      if (searchResult && searchResult.Search) {
-        const list = searchResult.Search as Movie[];
-        setMovieList(list);
-      }
-    })();
-
-    return () => {
-      setState("");
-    };
-  }, [state, setState]);
+const SearchPage = async ({params, searchParams}: {params: {slug: string}; searchParams?: {[key: string]: string | string[] | undefined}}) => {
+  const result: ResponseValue = await fetch(`https://omdbapi.com?apikey=7035c60c&s=${searchParams?.value}&page=1`)
+    .then((result) => {
+      if (result.ok) return result.json();
+      return undefined;
+    })
+    .then((result) => {
+      if (result && result.Response === "True") return result;
+      return {Search: []};
+    });
+  console.log(result);
   return (
-    <div className="flex flex-wrap">
-      {movieList.map((movie) => (
-        <MovieCard key={movie.imdbID} id={movie.imdbID} Title={movie.Title} Year={movie.Year} Poster={movie.Poster} />
+    <div>
+      {result.Search.map((movie) => (
+        <MovieCard key={movie.imdbID} {...movie} />
       ))}
     </div>
   );
 };
 
 export default SearchPage;
+interface ResponseValue {
+  Search: Movie[];
+  totalResults: string;
+  Response: "True";
+}
+interface ErrorValue {
+  Response: "False";
+  Error: string;
+}
+interface Movie {
+  Title: string;
+  Year: string;
+  imdbID: string;
+  Type: string;
+  Poster: string;
+}

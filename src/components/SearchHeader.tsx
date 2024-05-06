@@ -2,13 +2,15 @@
 
 import {ChangeEvent, FormEvent, FormEventHandler, useState} from "react";
 import {useSearchContext} from "@/context/SearchProvider";
+import {useRouter} from "next/navigation";
 const SearchHeader = () => {
   const [Input, setInput] = useState<string>("");
-  const {state, setState} = useSearchContext();
+
+  const router = useRouter();
   const searchInput = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (event.target) {
-      setState(Input);
+      router.push(`/search?value=${Input}`);
     }
     setInput("");
   };
