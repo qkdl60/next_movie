@@ -1,16 +1,16 @@
 "use client";
+import {getMovieDetail} from "@/api/getMovieDetail";
+import {useQuery} from "@tanstack/react-query";
+import {getCookie} from "cookies-next";
 import Image from "next/image";
 import {useEffect, useState} from "react";
 const detail = ["Title", "Year", "Director", "Writer", "Actors", "Plot"] as const;
 const MoviePage = ({params}: {params: Params}) => {
   const {id} = params;
+  const apiKey = getCookie("apiKey") || "";
 
-  const [movieDetail, setMovieDetail] = useState<ResponseValue | null>(null);
-  useEffect(() => {
-    fetch(`https://omdbapi.com?apikey=7035c60c&i=${id}`)
-      .then((res) => res.json())
-      .then((movie) => setMovieDetail(movie));
-  }, [id]);
+  const movieDetail = useQuery({queryKey: ["movie"], queryFn: () => getMovieDetail(apiKey, id)}).data;
+
   return (
     <div>
       {movieDetail && <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />}

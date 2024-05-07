@@ -1,30 +1,22 @@
-import Image from "next/image";
+import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
+import PageComponent from "./_component/PageComponent";
+import {getMovieDetail} from "@/api/getMovieDetail";
 import {cookies} from "next/headers";
-import {getCookie} from "cookies-next";
-const detail = ["Title", "Year", "Director", "Writer", "Actors", "Plot"] as const;
-const MoviePage = async ({params}: {params: Params}) => {
-  const id = params.id;
-  const apiKey = cookies().get("apiKey")?.value;
-  console.log(getCookie("searchValue"));
-  const res = await fetch(`https://omdbapi.com?apikey=${apiKey}&i=${id}`);
-  const movieDetail = (await res.json()) as ResponseValue;
+export default async function Page({params}: {params: Params}) {
+  const queryClient = new QueryClient();
+  const apiKey = cookies().get("apiKey")?.value || "";
+  const {id} = params;
+  await queryClient.prefetchQuery({queryKey: ["movie"], queryFn: () => getMovieDetail(apiKey, id)});
+
   return (
-    <div>
-      <Image src={movieDetail.Poster} width={800} height={800} alt={movieDetail.Title} />
-      <div className="flex flex-wrap gap-4">
-        {detail.map((item, index) => (
-          <div key={index}>
-            <h3 className="font-bold ">{item}</h3>
-            <h4>{movieDetail[item] ?? "null"}</h4>
-          </div>
-        ))}
-      </div>
-    </div>
+    // Neat! Serialization is now as easy as passing props.
+    // HydrationBoundary is a Client Component, so hydration will happen there.
+
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PageComponent id={id} />
+    </HydrationBoundary>
   );
-};
-
-export default MoviePage;
-
+}
 interface Params {
   id: string;
 }
